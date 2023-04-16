@@ -290,6 +290,13 @@ function _omz_git_prompt_status() {
     done
   fi
 
+  # Simplify to DIVERGED if both AHEAD and BEHIND
+  if (( ${+statuses_seen[AHEAD]} && ${+statuses_seen[BEHIND]} )); then
+    statuses_seen[DIVERGED]=1
+    unset -v "statuses_seen[AHEAD]"
+    unset -v "statuses_seen[BEHIND]"
+  fi
+
   # For each status prefix, do a regex comparison
   for status_prefix in ${(k)prefix_constant_map}; do
     local status_constant="${prefix_constant_map[$status_prefix]}"
